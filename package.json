@@ -1,0 +1,20 @@
+{
+	"name": "nodeLikes",
+	"description": "Tell us what you like!",
+	"author": "Dave Winer <dave@smallpicture.com>",
+	"version": "0.4.2",
+	"dependencies" : {
+		"mysql": "*",
+		"request": "2.81.0",
+		"dateformat": "*",
+		"davetwitter": "*",
+		"daveopml": "*",
+		"daves3": "*",
+		"s3folderloader": "*",
+		"daveutils": "*"
+		}, 
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+		}
+	}

@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.2";   
+var myProductName = "nodeLikes", myVersion = "0.4.3";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -10,36 +10,20 @@ const s3 = require ("daves3");
 
 var config = {
 	fnameStats: "data/stats.json",
-	fnameLog: "data/log.json", 
-	fnameLikeHtml: "likebutton.html",
-	logsFolder: "data/logs/"
 	};
 const fnameConfig = "config.json";
 
 var stats = {
 	productName: myProductName,
 	version: myVersion,
-	
 	ctStartups: 0,
-	whenLastStartup: new Date (),
+	whenLastStartup: new Date (0),
 	ctHits: 0,
 	ctHitsToday: 0,
 	ctHitsThisRun: 0,
-	whenLastHit: new Date (),
-	
-	ctFeedUpdates: 0,
-	ctFeedUpdatesToday: 0,
-	ctFeedUpdatesThisRun: 0,
-	whenLastFeedUpdate: new Date (),
-	whenLastDayRollover: new Date (),
-	whenLastHotlistChange: new Date (), 
-	whenLastLogChange: new Date (), 
-	
-	ctSubscriptions: undefined, //4/1/18 by DW
-	ctFeeds: undefined, //4/1/18 by DW
-	
-	lastFeedUpdate: {
-		}
+	whenLastHit: new Date (0),
+	ctLikes: 0, whenLastLike: new Date (0),
+	ctUnlikes: 0, whenLastUnlike: new Date (0)
 	};
 var flStatsChanged = false;
 
@@ -117,10 +101,16 @@ function like (username, url, callback) {
 		};
 	var sqltext = "replace into likes " + encodeValues (values);
 	runSqltext (sqltext, callback);
+	stats.ctLikes++;
+	stats.whenLastLike = new Date ();
+	statsChanged ();
 	}
 function unlike (username, url, callback) {
 	var sqltext = "delete from likes where username = " + encode (username) + " and url = " + encode (url) + ";";
 	runSqltext (sqltext, callback);
+	stats.ctUnlikes++;
+	stats.whenLastUnlike = new Date ();
+	statsChanged ();
 	}
 function getLikes (url, callback) {
 	var sqltext = "select username from likes where url = " + encode (url) + " order by whencreated desc;";
@@ -170,17 +160,6 @@ function toggleLike (username, url, callback) {
 			}
 		});
 	}
-function getLikeButton (url, callback) {
-	fs.readFile (config.fnameLikeHtml, function (err, data) {
-		if (err) {
-			callback (err);
-			}
-		else {
-			var htmltext = data.toString ();
-			callback (undefined, htmltext);
-			}
-		});
-	}
 
 function handleHttpRequest (theRequest) {
 	var params = theRequest.params;
@@ -221,45 +200,6 @@ function handleHttpRequest (theRequest) {
 			returnData (jstruct);
 			}
 		}
-	function httpReturnHtml (err, htmltext) {
-		if (err) {
-			returnError (err);
-			}
-		else {
-			theRequest.httpReturn (200, "text/html", htmltext);
-			}
-		}
-	function returnRedirect (url, code) {
-		if (code === undefined) {
-			code = 302;
-			}
-		theRequest.httpReturn (code, "text/plain", code + " REDIRECT");
-		}
-		
-	function returnFeedInfo (feedUrl) {
-		getFeedInfoFromDatabase (feedUrl, function (err, result) {
-			console.log ("returnFeedInfo: result == " + utils.jsonStringify (result));
-			httpReturn (err, result);
-			});
-		}
-	function getSqlResult (sqltext, callback) {
-		theSqlConnectionPool.getConnection (function (err, connection) {
-			if (err) {
-				httpReturn (err);
-				}
-			else {
-				connection.query (sqltext, function (err, result) {
-					connection.release ();
-					httpReturn (err, result);
-					});
-				}
-			});
-		}
-	function updateUserOpml (screenname) { //code was repeating, factored here
-		uploadUserOpmlToS3 (screenname, function (err, result) {
-			httpReturn (err, result);
-			});
-		}
 	function callWithScreenname (callback) {
 		davetwitter.getScreenName (token, secret, function (screenname) {
 			if (screenname === undefined) {
@@ -272,26 +212,20 @@ function handleHttpRequest (theRequest) {
 		}
 	
 	switch (theRequest.lowerpath) {
-		case "/":
-			return (returnServerHomePage ());
 		case "/now": 
 			returnPlainText (new Date ());
-			return (true); //we handled it
+			return (true); 
 		case "/stats":
 			returnData (stats);
-			return (true); //we handled it
+			return (true); 
 		case "/toggle":
 			callWithScreenname (function (screenname) {
 				toggleLike (screenname, params.url, httpReturn);
 				});
-			return (true); //we handled it
+			return (true); 
 		case "/likes":
 			getLikes (params.url, httpReturn);
-			return (true); //we handled it
-		case "/button":
-			getLikeButton (params.url, httpReturnHtml);
-			return (true); //we handled it
-		
+			return (true); 
 		}
 	return (false); //we didn't handle it
 	}
@@ -353,7 +287,6 @@ function everyMinute () {
 	readConfig ();
 	if (!utils.sameDay (stats.whenLastDayRollover, now)) { //date rollover
 		stats.whenLastDayRollover = now;
-		stats.ctFeedUpdatesToday = 0;
 		stats.ctHitsToday = 0;
 		statsChanged ();
 		}

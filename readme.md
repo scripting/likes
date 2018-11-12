@@ -8,5 +8,5 @@ A simple <i>likes</i> server for the web running in Node.
 
 2. Include JavaScript code in your app
 
-3, Where to get answers
+3. Where to get answers
 

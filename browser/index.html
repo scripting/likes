@@ -1,0 +1,112 @@
+<html>
+	<head>
+		<title>NodeLikes hello world </title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" type="image/x-icon" href="http://scripting.com/favicon.ico">
+		
+		<script src="http://fargo.io/code/jquery-1.9.1.min.js"></script>
+<link href="http://fargo.io/code/bootstrap.css" rel="stylesheet">
+<script src="http://fargo.io/code/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="http://scripting.com/code/fontawesome/css/all.css">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500i,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Rancho" rel="stylesheet">
+
+<script src="http://fargo.io/code/node/shared/utils.js"></script>
+<script src="http://fargo.io/code/node/shared/alertdialog.js"></script>
+<script src="http://fargo.io/code/node/shared/confirmdialog.js"></script>
+<script src="http://fargo.io/code/node/shared/askdialog.js"></script>
+<script src="http://fargo.io/code/strftime.js"></script>
+<script src="http://fargo.io/code/shared/ga.js"></script>
+<script src="http://fargo.io/code/shared/app.js"></script>
+
+<script src="http://fargo.io/code/shared/menus.js"></script>
+<link href="http://fargo.io/code/shared/menus.css" rel="stylesheet" type="text/css">
+
+<link href="http://fargo.io/code/shared/app.css" rel="stylesheet" type="text/css">
+<script src="http://fargo.io/code/shared/appprefs.js?x=2"></script>
+
+<script src="http://fargo.io/code/shared/jBeep.min.js"></script>
+<script src="http://fargo.io/code/shared/beep.js"></script>
+
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		
+		<script src="http://api.nodestorage.io/api.js"></script>
+		<script src="code.js"></script>
+		<link href="styles.css" rel="stylesheet" type="text/css">
+		
+		</head>
+	<body>
+		<div class="divPrefsDialog" comment="This is the Settings dialog.">
+			<div id="idPrefsDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
+				<div class="modal-body">
+					<div class="divDialogElements">
+						<form method="POST">
+	<div class="divTabsFromOutline">
+	<div class="tabbable">
+		<ul class="nav nav-tabs" data-tabs="tabs">
+			<li class="active" ><a href="#idMisc137"  data-toggle="tab">Misc</a></li>
+			</ul>
+		<div id="my-tab-content" class="tab-content">
+			<div class="active tab-pane" id="idMisc137">
+				<fieldset>
+					<div class="divPrefs">	<div class="clearfix">	<label for="flConfirmUploads"></label>	<div class="input">		<input type="checkbox" name="flConfirmUploads" value=xxx>&nbsp;Confirm before uploading OPML files.		</div>	</div><div class="clearfix">	<label for="urlReaderApp">Reader URL:</label>	<div class="input">		<input class="xlarge prefsInput" id="urlReaderApp" name="urlReaderApp" size="50" type="text" value="" placeholder="URL of the app to read RSS feeds." />		</div>	</div>	</div>
+					</fieldset>
+						</div>
+					</div>
+				</div>
+			</div>
+
+	</form>
+
+						</div>
+					</div>
+				<div class="modal-footer">
+					<a href="#" class="btn" onclick="prefsCloseDialog ();">Cancel</a>
+					<a href="#" class="btn btn-primary" onclick="prefsOkClicked ();">OK</a>
+					</div>
+				</div>
+			</div>
+		<div class="divIntroDialog">
+			<div id="idIntroDialog" class="modal hide fade">
+				<div class="modal-header">
+					<a href="#" class="close" data-dismiss="modal">&times;</a>
+					<h3 id="prompt">About feedBase, by Dave Winer...</h3>
+					</div>
+				<div class="modal-body">
+					<div class="divIntroBodyText">
+						<p><img src="http://scripting.com/2015/04/11/dave.png" border="0" style="float: right; padding-left: 25px; padding-bottom: 10px; padding-top: 10px; padding-right: 15px;" alt="Dave Winer, the developer of feedBase.">Welcome to feedBase, which as its name implies, a database of feeds. I'm asking people who read <a href="http://scripting.com/" target="_blank">my blog</a> to upload their OPML subscription lists, so we can mash them together and produce a graph of users and feeds that you can walk, learn from, and discover new feeds to subscribe to.</p>
+						<p>Important: Everything you upload to this site is public.</p>
+						</div>
+					</div>
+				<div class="modal-footer">
+					<a href="http://this.how/feedBase/" class="btn" style="float: left;">More Info</a>
+					<a href="#" class="btn btn-primary" onclick="$('#idIntroDialog').modal ('hide');">OK</a>
+					</div>
+				</div>
+			</div>
+		<div class="divPageBody">
+			<center>
+				
+				<br><br>
+				<div id="idLikes">
+					</div>
+				
+				<br><br>
+				<div id="idTwitterUsername"></div>
+				
+				<br><br>
+				<button id="idConnectButton" class="btn" type="button" onclick="toggleTwitterConnect ();">
+					Connect with Twitter
+					</button>
+				</center>
+			
+			</div>
+		<script>
+			$(document).ready (function () {
+				startup ();
+				});
+			</script>
+		</body>
+	</html>

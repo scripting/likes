@@ -16,6 +16,10 @@ var appPrefs = {
 	urlReaderApp: "http://xmlviewer.scripting.com/?url="
 	};
 
+const urlLikeServer = "http://likes.scripting.com/";
+var ctLikesInPage = 0; //11/10/18 by DW
+var flWasConnected = undefined;
+
 function toggleTwitterConnect () {
 	twToggleConnectCommand (function (prompt, callback) {
 		confirmDialog (prompt, function () {
@@ -23,82 +27,12 @@ function toggleTwitterConnect () {
 			});
 		});
 	}
-function everyMinute () {
-	var now = new Date ();
-	console.log ("\neveryMinute: " + now.toLocaleTimeString () + ", v" + appConsts.version);
-	if (flHotlistPage) {
-		if (ctHotlistUpdateChecks++ < maxHotlistUpdateChecks) { //5/15/18 by DW
-			viewHotlistWithCheckboxes (); //update if change
-			}
-		}
-	}
-function oldstartup () {
-	
-	function finishStartup () {
-		var feedurlParam = getURLParameter ("feedurl");
-		var usernameParam = getURLParameter ("username");
-		var testingParam = getURLParameter ("testing");
-		
-		if (testingParam != "null") {
-			console.log ("testing");
-			viewHotlistWithCheckboxes ();
-			}
-		else {
-			if (feedurlParam != "null") {
-				viewFeedPage (decodeURIComponent (feedurlParam));
-				}
-			else {
-				if (usernameParam != "null") {
-					viewUserPage (decodeURIComponent (usernameParam));
-					}
-				else {
-					viewHotlistWithCheckboxes ();
-					}
-				}
-			}
-		
-		
-		self.setInterval (everySecond, 1000); 
-		runAtTopOfMinute (function () {
-			self.setInterval (everyMinute, 60000); 
-			everyMinute ();
-			});
-		hitCounter (); 
-		initGoogleAnalytics (); 
-		}
-	
-	console.log ("startup");
-	
-	if (appConsts.urlTwitterServer == "[%urlTwitterServer%]") { //4/5/18 by DW
-		appConsts.urlTwitterServer = "http://feedbase.io/";
-		console.log ("startup: appConsts.urlTwitterServer == " + appConsts.urlTwitterServer);
-		}
-	
-	$("div[rel=tooltip]").tooltip ({
-		live: true
-		});
-	initMenus ();
-	menubarDropzoneSetup ();
-	
-	twStorageData.urlTwitterServer = appConsts.urlTwitterServer;
-	
-	if (localStorage.twSYO2Conversion === undefined) { //force user to login again if they haven't used SYO2
-		localStorage.removeItem ("twOauthToken");
-		localStorage.twSYO2Conversion = true; //now it's defined
-		}
-	
-	twGetOauthParams ();
-	if (twIsTwitterConnected ()) {
-		getPrefs (function () {
-			appPrefs.ctStartups++;
-			appPrefs.whenLastStartup = new Date ();
-			console.log ("startup: appPrefs == " + jsonStringify (appPrefs));
-			prefsChanged ();
-			finishStartup ();
-			});
-		}
-	else {
-		finishStartup ();
+function updateConnectButton () {
+	var flConnected = twIsTwitterConnected ();
+	if (flConnected !== flWasConnected) {
+		twUpdateTwitterMenuItem ("idConnectButton");
+		flWasConnected = flConnected;
+		$("#idConnectButton").css ("display", "inline");
 		}
 	}
 
@@ -111,10 +45,12 @@ function serverCall (verb, params, callback, server, method, data) {
 		params = new Object ();
 		}
 	if (params.accessToken === undefined) { //10/29/18 by DW
-		params.accessToken = appPrefs.accessToken;
+		if (localStorage.twOauthToken !== undefined) {
+			params.accessToken = localStorage.twOauthToken;
+			}
 		}
 	if (server === undefined) { //9/25/18 by DW
-		server = appConsts.urlTwitterServer;
+		server = urlLikeServer;
 		}
 	var apiUrl = server + verb;
 	var paramString = buildParamList (params);
@@ -137,23 +73,23 @@ function serverCall (verb, params, callback, server, method, data) {
 		callback ({message: "Error reading the file."});
 		});
 	}
-function likeClick (idLikes) {
+function likeClick (idLikes, urlForLike) {
+	twStorageData.urlTwitterServer = urlLikeServer;
 	if (twIsTwitterConnected ()) {
 		var params = {
 			oauth_token: localStorage.twOauthToken,
 			oauth_token_secret: localStorage.twOauthTokenSecret,
-			url: window.location.href
+			url: urlForLike
 			};
-		console.log ("likeClick:");
 		$("#" + idLikes).blur ();
 		serverCall ("toggle", params, function (err, jsontext) {
 			if (err) {
-				console.log ("likeClick: err == " + jsonStringify (err));
+				console.log ("likeClick: err.message == " + err.message);
 				}
 			else {
 				var jstruct = JSON.parse (jsontext);
 				console.log ("likeClick: jstruct == " + jsonStringify (jstruct));
-				viewLikes ("idLikes", jstruct.likes);
+				viewLikes (idLikes, urlForLike, jstruct.likes);
 				}
 			});
 		}
@@ -163,9 +99,9 @@ function likeClick (idLikes) {
 			});
 		}
 	}
-function getLikes (callback) {
+function getLikes (url, callback) {
 	var params = {
-		url: window.location.href
+		url: url
 		};
 	serverCall ("likes", params, function (err, jsontext) {
 		if (err) {
@@ -174,28 +110,31 @@ function getLikes (callback) {
 			}
 		else {
 			var jstruct = JSON.parse (jsontext);
-			console.log ("getLikes: jstruct == " + jsonStringify (jstruct));
 			callback (undefined, jstruct);
 			}
 		});
 	}
-function viewLikes (idLikes, likes) { 
+function viewLikes (idLikes, myUrl, likes) { 
+	function getThumbIcon (thumbDirection, flopen) {
+		var open = "";
+		if (flopen) {
+			open = "o-";
+			}
+		return ("<span class=\"spThumb\"><i class=\"fa fa-thumbs-" + open + thumbDirection + "\"></i></span>&nbsp;");
+		}
 	var likesObject = $("#" + idLikes);
-	var ct = 0, likenames = "", thumbDirection = "up", myScreenname = twGetScreenName (), flThumbOpen = true;
+	var ct = 0, likenames = "", thumbDirection = "up", flOpenThumb = true, myScreenname = twGetScreenName ();
 	if (likes !== undefined) {
 		likes.forEach (function (name) {
 			ct++;
 			likenames += name + ", ";
 			if (name == myScreenname) {
 				thumbDirection = "down";
-				flThumbOpen = false;
+				flOpenThumb = false;
 				}
 			});
 		}
-	
-	var openOrNot = (flThumbOpen) ? "-o" : "";
-	var theThumb = "<span class=\"spThumb\"><i class=\"fa fa-thumbs" + openOrNot + "-up\"></i></span>&nbsp;";
-	
+	var theThumb = getThumbIcon ("up", flOpenThumb);
 	var ctLikes = ct + " like";
 	if (ct != 1) {
 		ctLikes += "s";
@@ -204,36 +143,37 @@ function viewLikes (idLikes, likes) {
 		likenames = stringMid (likenames, 1, likenames.length - 2); //pop off comma and blank at end
 		ctLikes = "<span rel=\"tooltip\" title=\"" + likenames + "\">" + ctLikes + "</span>";
 		}
-	var htmltext = "<span class=\"spLikes\"><a onclick=\"likeClick ('" + idLikes + "')\">" + theThumb + "</a>" + ctLikes + "</span>";
+	var htmltext = "<span class=\"spLikes\"><a onclick=\"likeClick ('" + idLikes + "', '" + myUrl + "')\">" + theThumb + "</a>" + ctLikes + "</span>";
 	likesObject.html (htmltext);
 	$("[rel=\"tooltip\"]").tooltip ();
 	}
-function startLikes () {
-	getLikes (function (err, likes) {
-		if (err) {
-			console.log ("startLikes: " + err.message);
-			}
-		else {
-			viewLikes ("idLikes", likes);
-			}
-		});
-	}
+
 function everySecond () {
-	var now = clockNow ();
-	twUpdateTwitterMenuItem ("idConnectButton");
-	
-	$("#idTwitterUsername").html (localStorage.twScreenName); 
-	
-	twUpdateTwitterUsername ("idTwitterUsername");
-	
-	
+	updateConnectButton ();
+	}
+function startLikes () {
+	var url = window.location.href;
+	if (endsWith (url, "#")) {
+		url = stringMid (url, 1, url.length - 1);
+		}
+	$(".likeable").each (function () {
+		var thisColor = $(this).attr ("color");
+		var thisUrl = url + "#" + thisColor;
+		var id = "idLike" + ctLikesInPage++;
+		$(this).prepend ("<div class=\"divLikeContainer\" id=\"" + id + "\"></div>");
+		$(this).css ("color", thisColor);
+		getLikes (thisUrl, function (err, likes) {
+			console.log ("startLikes: id == " + id + ", thisColor == " + thisColor + ", likes == " + JSON.stringify (likes));
+			viewLikes (id, thisUrl, likes);
+			});
+		});
 	}
 function startup () {
 	console.log ("startup");
 	twStorageData.urlTwitterServer = appConsts.urlTwitterServer;
 	twGetOauthParams ();
-	self.setInterval (everySecond, 1000); 
 	startLikes ();
 	hitCounter (); 
 	initGoogleAnalytics (); 
+	self.setInterval (everySecond, 1000); 
 	}

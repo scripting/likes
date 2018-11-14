@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>NodeLikes hello world </title>
+		<title>Like Button Demo</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" type="image/x-icon" href="http://scripting.com/favicon.ico">
@@ -46,10 +46,10 @@
 	<div class="divTabsFromOutline">
 	<div class="tabbable">
 		<ul class="nav nav-tabs" data-tabs="tabs">
-			<li class="active" ><a href="#idMisc137"  data-toggle="tab">Misc</a></li>
+			<li class="active" ><a href="#idMisc740"  data-toggle="tab">Misc</a></li>
 			</ul>
 		<div id="my-tab-content" class="tab-content">
-			<div class="active tab-pane" id="idMisc137">
+			<div class="active tab-pane" id="idMisc740">
 				<fieldset>
 					<div class="divPrefs">	<div class="clearfix">	<label for="flConfirmUploads"></label>	<div class="input">		<input type="checkbox" name="flConfirmUploads" value=xxx>&nbsp;Confirm before uploading OPML files.		</div>	</div><div class="clearfix">	<label for="urlReaderApp">Reader URL:</label>	<div class="input">		<input class="xlarge prefsInput" id="urlReaderApp" name="urlReaderApp" size="50" type="text" value="" placeholder="URL of the app to read RSS feeds." />		</div>	</div>	</div>
 					</fieldset>
@@ -87,20 +87,29 @@
 				</div>
 			</div>
 		<div class="divPageBody">
-			<center>
-				
-				<br><br>
-				<div id="idLikes">
-					</div>
-				
-				<br><br>
-				<div id="idTwitterUsername"></div>
-				
-				<br><br>
-				<button id="idConnectButton" class="btn" type="button" onclick="toggleTwitterConnect ();">
-					Connect with Twitter
+			<h1 class="h1PageTitle">
+				Like Button Demo
+				</h1>
+			<p class="pText">
+				If you like the color, click the thumb.
+				</p>
+			<div class="divListContainer">
+				<ul class="ulLikeableList">
+					<li class="likeable" color="red"><i class="fa fa-circle"></i></li>
+					<li class="likeable" color="green"><i class="fa fa-circle"></i></li>
+					<li class="likeable" color="blue"><i class="fa fa-circle"></i></li>
+					</ul>
+				</div>
+			<p class="pText">
+				This is the demo app for my <i>Likes</i> server app. 
+				It has all the JavaScript code for the user interface.
+				See the <a href="https://github.com/scripting/likes">repository</a> for docs on how to deploy on your site. 
+				</p>
+			<div class="divButtons">
+				<button id="idConnectButton" class="btn btn-primary btnConnect" type="button" onclick="toggleTwitterConnect ();">
 					</button>
-				</center>
+				</div>
+			
 			
 			</div>
 		<script>

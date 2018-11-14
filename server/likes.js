@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.4";   
+var myProductName = "nodeLikes", myVersion = "0.4.5";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -10,6 +10,7 @@ const s3 = require ("daves3");
 
 var config = {
 	fnameStats: "data/stats.json",
+	flLogSql: true
 	};
 const fnameConfig = "config.json";
 
@@ -48,6 +49,11 @@ function runSqltext (s, callback) {
 				connection.release ();
 				if (err) {
 					console.log ("runSqltext: err.code == " + err.code + ", err.message == " + err.message);
+					}
+				else {
+					if (config.flLogSql) {
+						console.log ("runSqltext: " + s + ", result == " + utils.jsonStringify (result));
+						}
 					}
 				if (callback !== undefined) {
 					callback (err, result);

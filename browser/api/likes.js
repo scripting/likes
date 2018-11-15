@@ -1,4 +1,5 @@
 function nodeLikesApp (options, callback) {
+	var ctLikesInPage = 0;
 	function serverCall (verb, params, callback, server, method, data) {
 		const timeoutInMilliseconds = 30000;
 		if (method === undefined) {
@@ -106,21 +107,10 @@ function nodeLikesApp (options, callback) {
 			likenames = stringMid (likenames, 1, likenames.length - 2); //pop off comma and blank at end
 			ctLikes = "<span rel=\"tooltip\" title=\"" + likenames + "\">" + ctLikes + "</span>";
 			}
-		
 		likesObject.html ($("<span class=\"spLikes\">" + theThumb + ctLikes + "</span>"));
-		
-		
-		
-		
-		
-		
 		$("[rel=\"tooltip\"]").tooltip ();
 		}
 	function startLikes () {
-		var url = window.location.href;
-		if (endsWith (url, "#")) {
-			url = stringMid (url, 1, url.length - 1);
-			}
 		$(".likeable").each (function () {
 			var thisUrl = $(this).attr ("urlForLike");
 			var id = "idLike" + ctLikesInPage++;
@@ -136,16 +126,9 @@ function nodeLikesApp (options, callback) {
 				});
 			});
 		}
-	
-	if (options.urlTwitterServer === undefined) {
-		options.urlTwitterServer = "http://likes.scripting.com/";
-		}
-	twStorageData.urlTwitterServer = options.urlTwitterServer;
-	
+	twStorageData.urlTwitterServer = (options.urlLikesServer) ? options.urlLikesServer : "http://likes.scripting.com/";
 	twGetOauthParams (); //part of the oAuth dance
-	
 	startLikes ();
-	
 	if (callback !== undefined) {
 		callback ();
 		}

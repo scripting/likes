@@ -1,0 +1,15 @@
+.spLikes {
+	font-size: 18px;
+	cursor: pointer;
+	color: silver;
+	margin-left: 10px;
+	}
+.spLikes:hover {
+	color: gray;
+	}
+.spLikes a {
+	color: inherit;
+	}
+.spThumb a {
+	color: lightslategray;
+	}

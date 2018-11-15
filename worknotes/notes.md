@@ -1,1 +1,1 @@
-* 11/15/18; 3:03:01 PM by DW   * Getting first public release ready.
+* 11/15/18; 3:03:01 PM by DW   * Getting first public release ready.   * todo      * work on <head> section of the demo app, reduce the number of dependencies to a minimul   * done      * &nbsp;

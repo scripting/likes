@@ -6,7 +6,9 @@ A simple Node-based server that manages likes across arbitrary web pages. Includ
 
 Full <a href="https://github.com/scripting/likes/tree/master/browser">source</a> is provided for the <a href="http://scripting.com/code/nodelikes/client/">demo app</a>, of course. Please give it a try. 
 
-Ask questions. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
+Ask <a href="https://github.com/scripting/likes/issues">questions</a>. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
+
+There's an API. Please review it. Try creating your own app. Crib code from the demo app. 
 
 ### Basic facts
 

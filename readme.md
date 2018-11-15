@@ -16,7 +16,7 @@ If you want to run your own server, you have to create an app with Twitter. This
 
 ### The demo app
 
-Full source is provided for the demo app, of course. Please give it a try. 
+Full <a href="https://github.com/scripting/likes/tree/master/browser">source</a> is provided for the demo app, of course. Please give it a try. 
 
-Ask questions. I want to nail this down as quickly as possible so the sooner you spot problems the sooner they can be addressed.
+Ask questions. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
 

@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.6";   
+var myProductName = "nodeLikes", myVersion = "0.4.7";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -10,7 +10,9 @@ const s3 = require ("daves3");
 
 var config = {
 	fnameStats: "data/stats.json",
-	flLogSql: false
+	flLogSql: false,
+	urlServerHomePageSource: "http://scripting.com/code/nodelikes/myhomepage.html",
+	ctSecsHomepageCache: 1
 	};
 const fnameConfig = "config.json";
 
@@ -30,6 +32,8 @@ var flStatsChanged = false;
 
 var theSqlConnectionPool = undefined; 
 var flOneConsoleMsgInLastMinute = false;
+var homepageCache = undefined;
+var whenLastHomepageRead = new Date (0);
 
 function statsChanged () {
 	flStatsChanged = true;
@@ -188,6 +192,9 @@ function handleHttpRequest (theRequest) {
 			}
 		theRequest.httpReturn (200, "application/json", utils.jsonStringify (jstruct));
 		}
+	function returnHtml (htmltext) {
+		theRequest.httpReturn (200, "text/html", htmltext);
+		}
 	function returnXml (xmltext) {
 		theRequest.httpReturn (200, "text/xml", xmltext);
 		}
@@ -206,6 +213,27 @@ function handleHttpRequest (theRequest) {
 			returnData (jstruct);
 			}
 		}
+	function returnServerHomePage () { //return true if we handled it
+		if (config.urlServerHomePageSource === undefined) {
+			return (false);
+			}
+		if (utils.secondsSince (whenLastHomepageRead) > config.ctSecsHomepageCache) {
+			request (config.urlServerHomePageSource, function (error, response, htmltext) {
+				if (!error && response.statusCode == 200) {
+					homepageCache = htmltext;
+					whenLastHomepageRead = new Date ();
+					returnHtml (htmltext);
+					}
+				else {
+					returnNotFound ();
+					}
+				});
+			}
+		else {
+			returnHtml (homepageCache);
+			}
+		return (true);
+		}
 	function callWithScreenname (callback) {
 		davetwitter.getScreenName (token, secret, function (screenname) {
 			if (screenname === undefined) {
@@ -218,6 +246,8 @@ function handleHttpRequest (theRequest) {
 		}
 	
 	switch (theRequest.lowerpath) {
+		case "/":
+			return (returnServerHomePage ());
 		case "/now": 
 			returnPlainText (new Date ());
 			return (true); 

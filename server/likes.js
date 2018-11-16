@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.5";   
+var myProductName = "nodeLikes", myVersion = "0.4.6";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -10,7 +10,7 @@ const s3 = require ("daves3");
 
 var config = {
 	fnameStats: "data/stats.json",
-	flLogSql: true
+	flLogSql: false
 	};
 const fnameConfig = "config.json";
 

@@ -18,7 +18,7 @@ The server uses a SQL database to keep track of likes. Each like consists of thr
 
 The URLs are up to the application. In the demo app, we construct the URL for each item based on the URL of the page followed by # followed by the name of a color. 
 
-You are welcome to use my likes server. The client software defaults to using that server, but you can override it.
+You are welcome to use <a href="http://likes.scripting.com/">my likes server</a>. The client software defaults to using that server, but you can override it.
 
 If you want to run your own server, you have to create an app with Twitter. This used to be open to everyone, but they're making it harder. It's understandable, they have to try to get troll farms under control. But it seems this is a legitimate use of Twitter identity. 
 

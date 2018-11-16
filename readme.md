@@ -28,7 +28,7 @@ There are two calls, /toggle and /likes, that provide the backend services your 
 
 1. /toggle takes two params, an accessToken and the URL of the thing that you are either liking or unliking. 
 
-2. /likes just takes a URL and returns a list of users who have liked it. 
+2. /likes takes a URL and returns a list of users who have liked it. It doesn't require an accessToken.
 
 Look in the body of handleHttpRequest in <a href="https://github.com/scripting/likes/blob/master/server/likes.js">likes.js</a> for all the calls it responds to. 
 

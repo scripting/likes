@@ -22,3 +22,13 @@ You are welcome to use <a href="http://likes.scripting.com/">my likes server</a>
 
 If you want to run your own server, you have to create an app with Twitter. This used to be open to everyone, but they're making it harder. It's understandable, they have to try to get troll farms under control. But it seems this is a legitimate use of Twitter identity. 
 
+### API for the Node app
+
+There are two calls, /toggle and /likes, that provide the backend services your app needs.
+
+1. /toggle takes two params, an accessToken and the URL of the thing that you are either liking or unliking. 
+
+2. /likes just takes a URL and returns a list of users who have liked it. 
+
+Look in the body of handleHttpRequest in <a href="https://github.com/scripting/likes/blob/master/server/likes.js">likes.js</a> for all the calls it responds to. 
+

@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.7";   
+var myProductName = "nodeLikes", myVersion = "0.4.8";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -6,13 +6,13 @@ const fs = require ("fs");
 const request = require ("request");
 const davetwitter = require ("davetwitter");
 const dateFormat = require ("dateformat");
-const s3 = require ("daves3"); 
 
 var config = {
 	fnameStats: "data/stats.json",
 	flLogSql: false,
-	urlServerHomePageSource: "http://scripting.com/code/nodelikes/myhomepage.html",
-	ctSecsHomepageCache: 1
+	urlServerHomePageSource: "http://scripting.com/code/nodelikes/serverhomepage/",
+	ctSecsHomepageCache: 1,
+	urlFavicon: "http://scripting.com/favicon.ico"
 	};
 const fnameConfig = "config.json";
 
@@ -136,6 +136,20 @@ function getLikes (url, callback) {
 			}
 		});
 	}
+function getMyLikes (username, callback) { //11/17/18 by DW
+	var sqltext = "select url from likes where username = " + encode (username) + " order by whencreated desc;";
+	runSqltext (sqltext, function (err, result) {
+		if (!err) {
+			}
+		if (callback !== undefined) {
+			var theList = new Array ();
+			for (var i = 0; i < result.length; i++) {
+				theList.push (result [i].url);
+				}
+			callback (err, theList);
+			}
+		});
+	}
 function toggleLike (username, url, callback) {
 	var flLiked = false;
 	getLikes (url, function (err, theArray) {
@@ -213,6 +227,13 @@ function handleHttpRequest (theRequest) {
 			returnData (jstruct);
 			}
 		}
+	function returnRedirect (url, code) {
+		if (code === undefined) {
+			code = 302;
+			}
+		theRequest.httpReturn (code, "text/plain", code + " REDIRECT");
+		}
+		
 	function returnServerHomePage () { //return true if we handled it
 		if (config.urlServerHomePageSource === undefined) {
 			return (false);
@@ -248,6 +269,9 @@ function handleHttpRequest (theRequest) {
 	switch (theRequest.lowerpath) {
 		case "/":
 			return (returnServerHomePage ());
+		case "/favicon.ico":
+			returnRedirect (config.urlFavicon);
+			return (true); 
 		case "/now": 
 			returnPlainText (new Date ());
 			return (true); 
@@ -261,6 +285,11 @@ function handleHttpRequest (theRequest) {
 			return (true); 
 		case "/likes":
 			getLikes (params.url, httpReturn);
+			return (true); 
+		case "/mylikes":
+			callWithScreenname (function (screenname) {
+				getMyLikes (screenname, httpReturn);
+				});
 			return (true); 
 		}
 	return (false); //we didn't handle it

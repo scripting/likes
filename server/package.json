@@ -2,14 +2,13 @@
 	"name": "nodeLikes",
 	"description": "Tell us what you like!",
 	"author": "Dave Winer <dave@smallpicture.com>",
-	"version": "0.4.7",
+	"version": "0.4.8",
 	"dependencies" : {
 		"mysql": "*",
 		"request": "2.81.0",
 		"dateformat": "*",
 		"davetwitter": "*",
 		"daveopml": "*",
-		"daves3": "*",
 		"daveutils": "*"
 		}, 
 	"license": "MIT",

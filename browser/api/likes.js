@@ -79,6 +79,27 @@ function nodeLikesApp (options, callback) {
 				}
 			});
 		}
+	function getMyLikes (callback) {
+		if (twIsTwitterConnected ()) {
+			var params = {
+				oauth_token: localStorage.twOauthToken,
+				oauth_token_secret: localStorage.twOauthTokenSecret
+				};
+			serverCall ("mylikes", params, function (err, jsontext) {
+				if (err) {
+					console.log ("getMyLikes: err == " + jsonStringify (err));
+					callback (err);
+					}
+				else {
+					var jstruct = JSON.parse (jsontext);
+					callback (undefined, jstruct);
+					}
+				});
+			}
+		else {
+			callback (undefined, new Array ());
+			}
+		}
 	function viewLikes (likesObject, myUrl, likes) { 
 		function getThumbIcon (thumbDirection, flopen) {
 			var open = "";
@@ -126,8 +147,13 @@ function nodeLikesApp (options, callback) {
 				});
 			});
 		}
+	if (options === undefined) {
+		options = {
+			};
+		}
 	twStorageData.urlTwitterServer = (options.urlLikesServer) ? options.urlLikesServer : "http://likes.scripting.com/";
 	twGetOauthParams (); //part of the oAuth dance
+	this.getMyLikes = getMyLikes;
 	startLikes ();
 	if (callback !== undefined) {
 		callback ();

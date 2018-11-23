@@ -1,6 +1,8 @@
-# nodeLikes
+# Likes
 
-A simple Node-based server that manages likes across arbitrary web pages. Includes JavaScript code for clients that interfaces with the server.
+A simple Node-based server that manages likes across arbitrary web pages. Includes JavaScript code for clients that interfaces with the server. 
+
+This is the server behind the likes feature on <a href="http://scripting.com/">Scripting News</a>. 
 
 ### The demo app
 
@@ -24,11 +26,13 @@ If you want to run your own server, you have to create an app with Twitter. This
 
 ### API for the Node app
 
-There are two calls, /toggle and /likes, that provide the backend services your app needs.
+There are three calls, /toggle, /likes and /mylikes that provide the backend services your app needs.
 
-1. /toggle takes two params, an accessToken and the URL of the thing that you are either liking or unliking. 
+1. /toggle takes three params, and oauthToken, oauthSecret and the URL of the thing that you are either liking or unliking. 
 
-2. /likes takes a URL and returns a list of users who have liked it. It doesn't require an accessToken.
+2. /likes takes a URL and returns a list of users who have liked it. It doesn't require oAuth access info.
+
+3. /mylikes takes two params, and oauthToken, oauthSecret and returns an array of URLs the user has liked. 
 
 Look in the body of handleHttpRequest in <a href="https://github.com/scripting/likes/blob/master/server/likes.js">likes.js</a> for all the calls it responds to. 
 

@@ -26,13 +26,15 @@ If you want to run your own server, you have to create an app with Twitter. This
 
 ### API for the Node app
 
-There are three calls, /toggle, /likes and /mylikes that provide the backend services your app needs.
+There are four calls, /toggle, /likes, /mylikes and /toplikes that provide the backend services your app needs.
 
 1. /toggle takes three params, and oauthToken, oauthSecret and the URL of the thing that you are either liking or unliking. 
 
 2. /likes takes a URL and returns a list of users who have liked it. It doesn't require oAuth access info.
 
 3. /mylikes takes two params, and oauthToken, oauthSecret and returns an array of URLs the user has liked. 
+
+4. /toplikes takes no params, and returns an array of most-liked items, in descending order. 
 
 Look in the body of handleHttpRequest in <a href="https://github.com/scripting/likes/blob/master/server/likes.js">likes.js</a> for all the calls it responds to. 
 

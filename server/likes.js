@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.10";   
+var myProductName = "nodeLikes", myVersion = "0.4.11";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -31,6 +31,7 @@ var stats = {
 	ctUnlikes: 0, whenLastUnlike: new Date (0),
 	ctNightlySaves: 0, whenLastNightlySave: new Date (0),
 	ctNightlySaveErrors: 0, whenLastNightlySaveError: new Date (0),
+	ctSecsLastNightlySave: 0,
 	lastNightlySaveError: ""
 	};
 var flStatsChanged = false;
@@ -362,13 +363,14 @@ function writeStats (callback) {
 		});
 	}
 function saveLikesInJson (callback) { //11/24/18 by DW
-	var sqltext = "select * from likes;";
+	var sqltext = "select * from likes;", whenstart = new Date ();
 	runSqltext (sqltext, function (err, result) {
 		if (!err) {
 			fs.writeFile (config.fnameNightlyJson, utils.jsonStringify (result), function (err) {
 				var now = new Date ();
 				stats.ctNightlySaves++;
 				stats.whenLastNightlySave = now;
+				stats.ctSecsLastNightlySave = utils.secondsSince (whenstart);
 				if (err) {
 					stats.ctNightlySaveErrors++;
 					stats.whenLastNightlySaveError = now;

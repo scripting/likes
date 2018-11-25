@@ -2,7 +2,7 @@
 	"name": "nodeLikes",
 	"description": "Tell us what you like!",
 	"author": "Dave Winer <dave@smallpicture.com>",
-	"version": "0.4.8",
+	"version": "0.4.10",
 	"dependencies" : {
 		"mysql": "*",
 		"request": "2.81.0",

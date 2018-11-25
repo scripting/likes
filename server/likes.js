@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.8";   
+var myProductName = "nodeLikes", myVersion = "0.4.10";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -12,7 +12,9 @@ var config = {
 	flLogSql: false,
 	urlServerHomePageSource: "http://scripting.com/code/nodelikes/serverhomepage/",
 	ctSecsHomepageCache: 1,
-	urlFavicon: "http://scripting.com/favicon.ico"
+	urlFavicon: "http://scripting.com/favicon.ico",
+	flSaveNightlyInJson: true,
+	fnameNightlyJson: "data/likes.json"
 	};
 const fnameConfig = "config.json";
 
@@ -26,7 +28,10 @@ var stats = {
 	ctHitsThisRun: 0,
 	whenLastHit: new Date (0),
 	ctLikes: 0, whenLastLike: new Date (0),
-	ctUnlikes: 0, whenLastUnlike: new Date (0)
+	ctUnlikes: 0, whenLastUnlike: new Date (0),
+	ctNightlySaves: 0, whenLastNightlySave: new Date (0),
+	ctNightlySaveErrors: 0, whenLastNightlySaveError: new Date (0),
+	lastNightlySaveError: ""
 	};
 var flStatsChanged = false;
 
@@ -147,6 +152,17 @@ function getMyLikes (username, callback) { //11/17/18 by DW
 				theList.push (result [i].url);
 				}
 			callback (err, theList);
+			}
+		});
+	}
+function getTopLikes (callback) { //11/24/18 by DW
+	var sqltext = "select url, count(url) as ctLikes from likes group by url order by ctLikes desc limit 10;";
+	runSqltext (sqltext, function (err, result) {
+		if (!err) {
+			console.log ("getTopLikes: result == " + utils.jsonStringify (result));
+			}
+		if (callback !== undefined) {
+			callback (err, result);
 			}
 		});
 	}
@@ -291,6 +307,9 @@ function handleHttpRequest (theRequest) {
 				getMyLikes (screenname, httpReturn);
 				});
 			return (true); 
+		case "/toplikes":
+			getTopLikes (httpReturn);
+			return (true); 
 		}
 	return (false); //we didn't handle it
 	}
@@ -342,6 +361,27 @@ function writeStats (callback) {
 			});
 		});
 	}
+function saveLikesInJson (callback) { //11/24/18 by DW
+	var sqltext = "select * from likes;";
+	runSqltext (sqltext, function (err, result) {
+		if (!err) {
+			fs.writeFile (config.fnameNightlyJson, utils.jsonStringify (result), function (err) {
+				var now = new Date ();
+				stats.ctNightlySaves++;
+				stats.whenLastNightlySave = now;
+				if (err) {
+					stats.ctNightlySaveErrors++;
+					stats.whenLastNightlySaveError = now;
+					stats.lastNightlySaveError = err.message;
+					}
+				statsChanged ();
+				});
+			}
+		if (callback !== undefined) {
+			callback (err, result);
+			}
+		});
+	}
 function everyMinute () {
 	var now = new Date (), timestring = now.toLocaleTimeString ();
 	if (flOneConsoleMsgInLastMinute) {
@@ -354,6 +394,9 @@ function everyMinute () {
 		stats.whenLastDayRollover = now;
 		stats.ctHitsToday = 0;
 		statsChanged ();
+		if (config.flSaveNightlyInJson) { //11/24/18 by DW
+			saveLikesInJson ();
+			}
 		}
 	}
 function everySecond () {

@@ -100,6 +100,24 @@ function nodeLikesApp (options, callback) {
 			callback (undefined, new Array ());
 			}
 		}
+	function getTopLikes (callback) { //11/24/18 by DW
+		if (twIsTwitterConnected ()) {
+			serverCall ("toplikes", undefined, function (err, jsontext) {
+				if (err) {
+					console.log ("getTopLikes: err == " + jsonStringify (err));
+					callback (err);
+					}
+				else {
+					var jstruct = JSON.parse (jsontext);
+					console.log ("getTopLikes: jstruct == " + jsonStringify (jstruct));
+					callback (undefined, jstruct);
+					}
+				});
+			}
+		else {
+			callback (undefined, new Array ());
+			}
+		}
 	function viewLikes (likesObject, myUrl, likes) { 
 		function getThumbIcon (thumbDirection, flopen) {
 			var open = "";
@@ -154,6 +172,7 @@ function nodeLikesApp (options, callback) {
 	twStorageData.urlTwitterServer = (options.urlLikesServer) ? options.urlLikesServer : "http://likes.scripting.com/";
 	twGetOauthParams (); //part of the oAuth dance
 	this.getMyLikes = getMyLikes;
+	this.getTopLikes = getTopLikes;
 	startLikes ();
 	if (callback !== undefined) {
 		callback ();

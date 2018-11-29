@@ -24,6 +24,10 @@ You are welcome to use <a href="http://likes.scripting.com/">my likes server</a>
 
 If you want to run your own server, you have to create an app with Twitter. This used to be open to everyone, but they're making it harder. It's understandable, they have to try to get troll farms under control. But it seems this is a legitimate use of Twitter identity. 
 
+### What does a Like mean?
+
+It's a way to tell the author that you saw what they wrote and found it likeable. It doesn't mean you necessarily agree. You're also registering your presence to other people who read the blog. It's a way to say hi to the author and others who read the blog. (From a <a href="http://scripting.com/2018/11/17.html#a200227">post</a> on Scripting News.)
+
 ### API for the Node app
 
 There are four calls, /toggle, /likes, /mylikes and /toplikes that provide the backend services your app needs.

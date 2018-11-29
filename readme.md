@@ -38,5 +38,5 @@ There are four calls, /toggle, /likes, /mylikes and /toplikes that provide the b
 
 Look in the body of handleHttpRequest in <a href="https://github.com/scripting/likes/blob/master/server/likes.js">likes.js</a> for all the calls it responds to. 
 
-Thejeshgn <a href="https://apps.thejeshgn.com/swagger-ui/?url=https://gist.githubusercontent.com/thejeshgn/f817ff92f87736fe3dfb8f3df496f8f8/raw/a185c70faa7d07dfb9e47422c93ce240a3ad2760/likes-api.yaml">wrote docs</a> for this API in an innovative way. 
+Thejeshgn <a href="https://apps.thejeshgn.com/swagger-ui/?url=https://gist.githubusercontent.com/thejeshgn/f817ff92f87736fe3dfb8f3df496f8f8/raw/a185c70faa7d07dfb9e47422c93ce240a3ad2760/likes-api.yaml">wrote docs</a> for this API in an innovative way. Comment <a href="https://github.com/scripting/likes/issues/2">here</a>. 
 

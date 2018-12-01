@@ -1,39 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Oswald:400,700');
-
-body {
-	font-family: Ubuntu;
-	font-size: 24px;
-	}
 .divPageBody {
 	width: 60%;
 	margin-top: 200px;
 	margin-left: auto;
 	margin-right: auto;
+	font-size: 48px;
 	}
 .divMyLikes {
 	text-align: center;
 	}
 
-/* styles for phone */
-	@media only screen 
-	and (min-device-width : 320px) 
-	and (max-device-width : 480px) {
-		body {
-			font-size: 16px;
-			}
-		.divPageBody {
-			width: 90%;
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 90px;
-			}
-		
-		}
-/* styles for tablet */
-	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-		.divPageBody {
-			width: 75%;
-			margin-left: auto;
-			margin-right: auto;
-			}
-		}

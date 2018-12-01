@@ -138,10 +138,15 @@ function nodeLikesApp (options, callback) {
 				});
 			}
 		var theThumb = getThumbIcon ("up", flOpenThumb);
-		var ctLikes = ct + " like";
-		if (ct != 1) {
-			ctLikes += "s";
+		
+		var ctLikes = ct;
+		if (options.addTheWordLikes) { //12/1/18 by DW
+			ctLikes += " like";
+			if (ct != 1) {
+				ctLikes += "s";
+				}
 			}
+		
 		if (ct > 0) {
 			likenames = stringMid (likenames, 1, likenames.length - 2); //pop off comma and blank at end
 			ctLikes = "<span rel=\"tooltip\" title=\"" + likenames + "\">" + ctLikes + "</span>";
@@ -153,7 +158,15 @@ function nodeLikesApp (options, callback) {
 		$(".likeable").each (function () {
 			var thisUrl = $(this).attr ("urlForLike");
 			var id = "idLike" + ctLikesInPage++;
-			$(this).prepend ("<div class=\"divLikeContainer\" id=\"" + id + "\"></div>");
+			var container = "<div class=\"divLikeContainer\" id=\"" + id + "\"></div>";
+			
+			if (options.flPrepend) { //12/1/18 by DW
+				$(this).prepend (container);
+				}
+			else {
+				$(this).append (container);
+				}
+			
 			getLikes (thisUrl, function (err, likes) {
 				var likesObject = $("#" + id);
 				console.log ("startLikes: id == " + id + ", thisUrl == " + thisUrl + ", likes == " + JSON.stringify (likes));
@@ -171,6 +184,8 @@ function nodeLikesApp (options, callback) {
 		}
 	twStorageData.urlTwitterServer = (options.urlLikesServer) ? options.urlLikesServer : "http://likes.scripting.com/";
 	twGetOauthParams (); //part of the oAuth dance
+	options.flPrepend = (options.flPrepend === undefined) ? false : options.flPrepend; //12/1/18 by DW
+	options.addTheWordLikes = (options.addTheWordLikes === undefined) ? false : options.addTheWordLikes; //12/1/18 by DW
 	this.getMyLikes = getMyLikes;
 	this.getTopLikes = getTopLikes;
 	startLikes ();

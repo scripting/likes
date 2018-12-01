@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.11";   
+var myProductName = "nodeLikes", myVersion = "0.4.12";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");

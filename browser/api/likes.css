@@ -1,5 +1,4 @@
 .spLikes {
-	font-size: 18px;
 	cursor: pointer;
 	color: silver;
 	margin-left: 10px;
@@ -12,4 +11,7 @@
 	}
 .spThumb a {
 	color: lightslategray;
+	}
+.divLikeContainer {
+	display: inline-block;
 	}

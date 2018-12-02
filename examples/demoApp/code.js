@@ -28,6 +28,8 @@ function startup () {
 		$(this).css ("color", thisColor);
 		});
 	var options = {
+		flPrepend: true,
+		addTheWordLikes: true,
 		urlLikesServer: "http://likes.scripting.com/"
 		};
 	myNodeLikesApp = new nodeLikesApp (options, function () {

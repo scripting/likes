@@ -6,7 +6,7 @@ This is the server behind the likes feature on <a href="http://scripting.com/">S
 
 ### The demo app
 
-Full <a href="https://github.com/scripting/likes/tree/master/browser">source</a> is provided for the <a href="http://scripting.com/code/nodelikes/client/">demo app</a>, of course. Please give it a try. 
+Full <a href="https://github.com/scripting/likes/tree/master/examples/demoApp">source</a> is provided for the <a href="http://scripting.com/code/nodelikes/client/">demo app</a>, of course. Please give it a try. 
 
 Ask <a href="https://github.com/scripting/likes/issues">questions</a>. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
 

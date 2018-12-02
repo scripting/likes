@@ -1,11 +1,10 @@
+body {
+	font-size: 24px;
+	}
 .divPageBody {
-	width: 60%;
+	width: 20%;
 	margin-top: 200px;
 	margin-left: auto;
 	margin-right: auto;
-	font-size: 48px;
-	}
-.divMyLikes {
-	text-align: center;
 	}
 

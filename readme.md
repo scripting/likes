@@ -12,6 +12,10 @@ Ask <a href="https://github.com/scripting/likes/issues">questions</a>. I want to
 
 There's a <a href="https://github.com/scripting/likes/tree/master/browser/api">JavaScript API</a> for the browser. Please review it. Try creating your own app. Follow the example of the demo app. I've tried to make it clear. If you have questions, ask. That'll help me fill out the docs. 
 
+### The Hello World app
+
+There's an even simpler <a href="http://scripting.com/code/nodelikes/client/testing/">demo app</a> that's just enough to put up a bit of text with a like element adjacent to it. Here's the <a href="https://github.com/scripting/likes/tree/master/examples/helloWorld">source</a>. 
+
 ### Basic facts
 
 We use Twitter for identity. We don't read anything from the user's Twitter account, or post anything to it, we use it  to know who's doing the liking. 

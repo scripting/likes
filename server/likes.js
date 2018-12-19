@@ -1,4 +1,4 @@
-var myProductName = "nodeLikes", myVersion = "0.4.12";   
+var myProductName = "nodeLikes", myVersion = "0.4.15";   
 
 const mysql = require ("mysql");
 const utils = require ("daveutils");
@@ -6,6 +6,8 @@ const fs = require ("fs");
 const request = require ("request");
 const davetwitter = require ("davetwitter");
 const dateFormat = require ("dateformat");
+const s3 = require ("daves3"); 
+const rss = require ("daverss");
 
 var config = {
 	fnameStats: "data/stats.json",
@@ -14,7 +16,26 @@ var config = {
 	ctSecsHomepageCache: 1,
 	urlFavicon: "http://scripting.com/favicon.ico",
 	flSaveNightlyInJson: true,
-	fnameNightlyJson: "data/likes.json"
+	fnameNightlyJson: "data/likes.json",
+	rssFeed: { //12/17/18 by DW -- feed of all tweets we've published
+		enabled: false,
+		title: "Scripting News comments",
+		link: "https://twitter.com/hashtag/scriptingnews",
+		description: "A feed of all comments posted to Scripting News",
+		language: "en-us",
+		generator: myProductName + " v" + myVersion,
+		docs: "http://cyber.law.harvard.edu/rss/rss.html",
+		maxFeedItems: 25,
+		flRssCloudEnabled:  true,
+		rssCloudDomain:  "rpc.rsscloud.io",
+		rssCloudPort:  5337,
+		rssCloudPath: "/pleaseNotify",
+		rssCloudRegisterProcedure:  "",
+		rssCloudProtocol:  "http-post",
+		rssPingPath: "/ping"
+		},
+	rssFilePath: "data/rss.xml",  //12/17/18 by DW
+	rssS3Path: "/scripting.com/comments/rss.xml" //12/17/18 by DW
 	};
 const fnameConfig = "config.json";
 
@@ -32,7 +53,8 @@ var stats = {
 	ctNightlySaves: 0, whenLastNightlySave: new Date (0),
 	ctNightlySaveErrors: 0, whenLastNightlySaveError: new Date (0),
 	ctSecsLastNightlySave: 0,
-	lastNightlySaveError: ""
+	lastNightlySaveError: "",
+	feedItems: new Array () //12/17/18 by DW
 	};
 var flStatsChanged = false;
 
@@ -201,7 +223,65 @@ function toggleLike (username, url, callback) {
 			}
 		});
 	}
-
+function buildFeed () {
+	var xmltext = rss.buildRssFeed (config.rssFeed, stats.feedItems);
+	fs.writeFile (config.rssFilePath, xmltext, function (err) {
+		if (err) {
+			console.log ("buildFeed: config.rssFilePath == " + config.rssFilePath + ", err.message == " + err.message);
+			}
+		});
+	s3.newObject (config.rssS3Path, xmltext, "text/xml", "public-read", function (err, data) {
+		if (err) {
+			console.log ("buildFeed: config.rssS3Path == " + config.rssS3Path + ", err.message == " + err.message);
+			}
+		else {
+			var urlPingServer = "http://" + config.rssCloudDomain + ":" + config.rssCloudPort + config.rssPingPath;
+			rss.cloudPing (urlPingServer, "http:/" + config.rssS3Path);
+			}
+		});
+	}
+function addItemToFeed (item, callback) { //12/17/18 by DW
+	davetwitter.getScreenName (item.oauth_token, item.oauth_token_secret, function (screenName) {
+		if (screenName === undefined) {
+			if (callback !== undefined) {
+				callback ({message: "Can't add to the feed because the credentials are not valid."});
+				}
+			}
+		else {
+			item.twitterScreenName = screenName;
+			delete item.oauth_token;
+			delete item.oauth_token_secret;
+			delete item.accessToken;
+			item.when = new Date ();
+			if (item.permalink !== undefined) {
+				item.guid = {
+					flPermalink: true,
+					value: item.permalink
+					};
+				delete item.permalink;
+				}
+			if (item.category !== undefined) {
+				if (utils.beginsWith (item.category, "#")) {
+					item.category = utils.stringDelete (item.category, 1, 1);
+					}
+				item.categories = [
+					item.category
+					];
+				delete item.category;
+				}
+			stats.feedItems.unshift (item);
+			while (stats.feedItems.length > config.rssFeed.maxFeedItems) {
+				stats.feedItems.pop ();
+				}
+			statsChanged ();
+			console.log ("addItemToFeed: item == " + utils.jsonStringify (item));
+			buildFeed ();
+			if (callback !== undefined) {
+				callback (undefined, item);
+				}
+			}
+		});
+	}
 function handleHttpRequest (theRequest) {
 	var params = theRequest.params;
 	var token = (params.oauth_token !== undefined) ? params.oauth_token : undefined;
@@ -310,6 +390,9 @@ function handleHttpRequest (theRequest) {
 			return (true); 
 		case "/toplikes":
 			getTopLikes (httpReturn);
+			return (true); 
+		case "/addtofeed":
+			addItemToFeed (params, httpReturn);
 			return (true); 
 		}
 	return (false); //we didn't handle it

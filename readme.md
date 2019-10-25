@@ -10,7 +10,7 @@ Full <a href="https://github.com/scripting/likes/tree/master/examples/demoApp">s
 
 Ask <a href="https://github.com/scripting/likes/issues">questions</a>. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
 
-There's a <a href="https://github.com/scripting/likes/tree/master/browser/api">JavaScript API</a> for the browser. Please review it. Try creating your own app. Follow the example of the demo app. I've tried to make it clear. If you have questions, ask. That'll help me fill out the docs. 
+There's a <a href="https://github.com/scripting/likes/tree/master/api">JavaScript API</a> for the browser. Please review it. Try creating your own app. Follow the example of the demo app. I've tried to make it clear. If you have questions, ask. That'll help me fill out the docs. 
 
 ### The Hello World app
 

@@ -10,11 +10,11 @@ Full <a href="https://github.com/scripting/likes/tree/master/examples/demoApp">s
 
 Ask <a href="https://github.com/scripting/likes/issues">questions</a>. I want to nail this down as quickly as possible, so the sooner you spot problems the sooner they can be addressed.
 
-There's a <a href="https://github.com/scripting/likes/tree/master/browser/api">JavaScript API</a> for the browser. Please review it. Try creating your own app. Follow the example of the demo app. I've tried to make it clear. If you have questions, ask. That'll help me fill out the docs. 
+There's a <a href="https://github.com/scripting/likes/blob/master/api/likes.js">JavaScript API</a> for the browser. Please review it. Try creating your own app. Follow the example of the demo app. I've tried to make it clear. If you have questions, ask. That'll help me fill out the docs. 
 
 ### The Hello World app
 
-There's an even simpler <a href="http://scripting.com/code/nodelikes/client/testing/">demo app</a> that's just enough to put up a bit of text with a like element adjacent to it. Here's the <a href="https://github.com/scripting/likes/tree/master/examples/helloWorld">source</a>. 
+There's an even simpler <a href="http://scripting.com/code/nodelikes/helloworld/">demo app</a> that's just enough to put up a bit of text with a like element adjacent to it. Here's the <a href="https://github.com/scripting/likes/tree/master/examples/helloWorld">source</a>. 
 
 ### Basic facts
 
